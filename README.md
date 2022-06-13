@@ -5,7 +5,7 @@
 Local Directory for Saving Files with LocalStorage.
 With `DirectoryLocal`, you can write, read, copy, rename and remove files using `localStorage`.
 
-`DirectoryLocal` is not recommended for apps/websites that keeps the cookie size as small as possible,
+`DirectoryLocal` is not recommended for apps/websites that keeps their cookie size as small as possible,
 since characters are splitted.
 
 ```js
