@@ -7,6 +7,12 @@
  */
 
 class DirectoryLocal {
+  static directories() {
+    var dirs = [];
+    var m = /DirectoryLocal~(.+)@.+:\d+/;
+    for(var i = 0; i < localStorage.length; i++) if(localStorage.key(i).match(m)) dirs.push(atob(localStorage.key(i).match(m)["1"]));
+    return dirs;
+  }
   constructor(name) {
     this.dirname = name;
     this.files = [];
