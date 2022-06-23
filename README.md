@@ -48,9 +48,14 @@ var dir = new DirectoryLocal("mydir");
 | `files`   | None                                        | Return all files from directory     |
 | `url`     | `String` : Filename                         | Return Local URL of file content    |
 
-
-### Changing the current directory
+## Others
+### Change the directory
 
 ```js
 dir.dirname = "mydir";
+```
+
+### Get all saved directories
+```js
+DirectoryLocal.directories();
 ```
