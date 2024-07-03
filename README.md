@@ -57,5 +57,34 @@ dir.dirname = "mydir";
 
 ### Get all saved directories
 ```js
+// For static use, localStorage is the primary storage.
+// To change, provide the storage.
+// .directories(WebStorage: storage);
+
 DirectoryLocal.directories();
+
+// For instance use, it depends on the
+// instance's storage container
+
+var directory = new DirectoryLocal("My Directory");
+directory.use(sessionStorage);
+
+// This will use sessionStorage
+directory.directories();
 ```
+
+## Use Different Storage
+By default, local storage is the primary storage. To change it, you can use the `use(WebStorage: storage)` method.
+
+```js
+// This will use sessionStorage
+// instead of localStorage
+DirectoryLocal.use(sessionStorage);
+```
+
+For custom storage, you need to provide these methods and properties which follows `WebStorage` structure:
+
+- `getItem(key)`
+- `setItem(key, val)`
+- `key(index)`
+- `.length`
