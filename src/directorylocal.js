@@ -8,7 +8,7 @@
 
 class DirectoryLocal {
   storage = window.localStorage;
-  static directories(storage) {
+  static directories(storage=window.localStorage) {
     var dirs = [];
     var m = /DirectoryLocal~(.+)@.+:\d+/;
     for(var i = 0; i < storage.length; i++) if(storage.key(i).match(m)) dirs.push(atob(storage.key(i).match(m)["1"]));
