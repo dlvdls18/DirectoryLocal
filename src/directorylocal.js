@@ -7,21 +7,32 @@
  */
 
 class DirectoryLocal {
-  static directories() {
+  storage = window.localStorage;
+  static directories(storage) {
     var dirs = [];
     var m = /DirectoryLocal~(.+)@.+:\d+/;
-    for(var i = 0; i < localStorage.length; i++) if(localStorage.key(i).match(m)) dirs.push(atob(localStorage.key(i).match(m)["1"]));
+    for(var i = 0; i < storage.length; i++) if(storage.key(i).match(m)) dirs.push(atob(storage.key(i).match(m)["1"]));
     return dirs;
   }
   constructor(name) {
     this.dirname = name;
     this.files = [];
   }
+  directories() {
+    var dirs = [];
+    var m = /DirectoryLocal~(.+)@.+:\d+/;
+    for(var i = 0; i < this.storage.length; i++) if(this.storage.key(i).match(m)) dirs.push(atob(this.storage.key(i).match(m)["1"]));
+    return dirs;
+  }
+  use(storage) {
+    this.storage = storage;
+  }
   write(files) {
     if(!Array.isArray(files)) files = [files];
     var name = this.dirname;
+    var storage = this.storage;
     files.forEach(async function(file) {
-      if(localStorage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file.name) + ":1") != null) throw new Error("File already exist");
+      if(storage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file.name) + ":1") != null) throw new Error("File already exist");
       var text = await file.text();
       var contents = [];
       var content = "";
@@ -37,7 +48,7 @@ class DirectoryLocal {
       if(content != "") contents.push(content);
       var content_index = 1;
       contents.forEach(function(content) {
-        localStorage.setItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file.name) + ":" + content_index, content);
+        storage.setItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file.name) + ":" + content_index, content);
         content_index += 1;
       });
     });
@@ -46,8 +57,9 @@ class DirectoryLocal {
     var name = this.dirname;
     var text = "";
     var count = 1;
-    while(localStorage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count) != null) {
-      text += localStorage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count);
+    var storage = this.storage;
+    while(storage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count) != null) {
+      text += storage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count);
       count += 1;
     }
     return text;
@@ -55,12 +67,14 @@ class DirectoryLocal {
   remove(file) {
     var name = this.dirname;
     var count = 1;
-    while(localStorage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count) != null) {
-      localStorage.removeItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count)
+    var storage = this.storage;
+    while(storage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count) != null) {
+      storage.removeItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":" + count)
     }
   }
   exist(file) {
-    return localStorage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":1") != null;
+    var storage = this.storage;
+    return storage.getItem("DirectoryLocal~" + btoa(name) + "@" + btoa(file) + ":1") != null;
   }
   copy(file, dest, type) {
     var t = this.read(file);
@@ -73,18 +87,20 @@ class DirectoryLocal {
   }
   destroy() {
     var name = this.dirname;
-    for(var i = 0; i < localStorage.length; i++) {
-      var key = localStorage.key(i).substr(15, localStorage.key(i).length).split("@")[0];
+    var storage = this.storage;
+    for(var i = 0; i < storage.length; i++) {
+      var key = storage.key(i).substr(15, storage.key(i).length).split("@")[0];
       try {
-        if(atob(key) == name) localStorage.removeItem(localStorage.key(i));
+        if(atob(key) == name) storage.removeItem(storage.key(i));
       } catch(e) {}
     }
   }
   files() {
     var name = this.dirname;
-    for(var i = 0; i < localStorage.length; i++) {
-      var key = atob(localStorage.key(i).split(":")[1]);
-      var fn = localStorage.key(i).substr(15, localStorage.key(i).length).split("@")[0];
+    var storage = this.storage;
+    for(var i = 0; i < storage.length; i++) {
+      var key = atob(storage.key(i).split(":")[1]);
+      var fn = storage.key(i).substr(15, storage.key(i).length).split("@")[0];
       var files = [];
       try {
         if(atob(fn) == name) files.push(key);
