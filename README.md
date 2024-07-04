@@ -88,3 +88,5 @@ For custom storage, you need to provide these methods and properties which follo
 - `setItem(key, val)`
 - `key(index)`
 - `.length`
+
+<img src="https://komarev.com/ghpvc/?username=creuserr" alt="" width="0"></img>
